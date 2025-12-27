@@ -162,7 +162,7 @@
 
                 <div class="auth-divider">atau</div>
 
-                <button class="btn btn-google btn-lg">
+                <button class="btn btn-google btn-lg" onclick="loginWithGoogle()">
                     <svg width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#4285F4"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -185,6 +185,30 @@
 
     <script src="js/api.js"></script>
     <script>
+        // Check for OAuth callback params
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const user = urlParams.get('user');
+        const error = urlParams.get('error');
+
+        if (token && user) {
+            // Successful Google login
+            localStorage.setItem('resellerhub_token', token);
+            localStorage.setItem('resellerhub_user', decodeURIComponent(user));
+            window.location.href = 'dashboard.html';
+        }
+
+        if (error) {
+            document.getElementById('alertContainer').innerHTML =
+                `<div class="alert alert-error">Login gagal: ${error}</div>`;
+        }
+
+        // Google login function
+        function loginWithGoogle() {
+            window.location.href = '/api/auth/google';
+        }
+
+        // Email/Password login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
