@@ -4,7 +4,7 @@
  */
 
 import Groq from 'groq-sdk';
-import { verifyToken, extractToken } from './lib/auth.js';
+import { verifyToken, extractToken } from './_lib/auth.js';
 
 let groqClient = null;
 function getGroq() {

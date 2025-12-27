@@ -7,8 +7,8 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { query, queryOne, execute } from './lib/db.js';
-import { verifyToken, extractToken } from './lib/auth.js';
+import { query, queryOne, execute } from './_lib/db.js';
+import { verifyToken, extractToken } from './_lib/auth.js';
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
