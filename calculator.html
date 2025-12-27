@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Calculator - ResellerHub AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calc-form {
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+        }
+
+        .calc-form h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section:last-child {
+            border: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            display: flex;
+        }
+
+        .input-group .form-input {
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+        }
+
+        .input-addon {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-left: none;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+        }
+
+        .result-card h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+        }
+
+        .result-item .label {
+            color: var(--text-muted);
+        }
+
+        .result-item .value {
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .result-item.highlight {
+            background: var(--gradient-primary);
+        }
+
+        .result-item.highlight .label,
+        .result-item.highlight .value {
+            color: white;
+        }
+
+        .profit-display {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-xl);
+            margin-bottom: 1.5rem;
+        }
+
+        .profit-display.loss {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .profit-label {
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .profit-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .profit-display.loss .profit-value {
+            color: var(--danger);
+        }
+
+        .profit-percent {
+            font-size: 1.25rem;
+            color: var(--success);
+            margin-top: 0.5rem;
+        }
+
+        .profit-display.loss .profit-percent {
+            color: var(--danger);
+        }
+
+        .quick-tips {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--warning);
+        }
+
+        .quick-tips h4 {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-tips p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .breakdown-table {
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .breakdown-table th,
+        .breakdown-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .breakdown-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .breakdown-table .amount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .breakdown-table .total-row {
+            border-top: 2px solid rgba(99, 102, 241, 0.3);
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a></div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="sidebar-link"><span class="sidebar-icon">📊</span> Dashboard</a>
+            <a href="products.html" class="sidebar-link"><span class="sidebar-icon">📦</span> Produk</a>
+            <a href="price-intel.html" class="sidebar-link"><span class="sidebar-icon">🔍</span> Price Intel</a>
+            <a href="sync.html" class="sidebar-link"><span class="sidebar-icon">🔄</span> Multi-Sync</a>
+            <a href="analytics.html" class="sidebar-link"><span class="sidebar-icon">📈</span> Analytics</a>
+            <a href="calculator.html" class="sidebar-link active"><span class="sidebar-icon">💰</span> Profit Calc</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+            <button class="sidebar-link" onclick="authAPI.logout()"><span class="sidebar-icon">🚪</span> Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-search"><input type="text" placeholder="Cari..." class="form-input"></div>
+            <div class="topbar-actions">
+                <button class="btn-icon">🔔<span class="badge">2</span></button>
+                <div class="user-menu"><span id="userName">User</span>
+                    <div class="user-avatar">👤</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <h1 class="page-title">💰 Profit Calculator</h1>
+            </div>
+
+            <div class="calc-grid">
+                <!-- Input Form -->
+                <div class="calc-form">
+                    <h3>📝 Input Data</h3>
+
+                    <div class="form-section">
+                        <div class="form-section-title">💵 Harga</div>
+                        <div class="form-group">
+                            <label class="form-label">Harga Modal (Rp)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="costPrice" value="50000"
+                                    oninput="calculate()">
+                                <span class="input-addon">Rp</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Harga Jual (Rp)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="sellPrice" value="75000"
+                                    oninput="calculate()">
+                                <span class="input-addon">Rp</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jumlah Terjual</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="quantity" value="100" oninput="calculate()">
+                                <span class="input-addon">pcs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">🏪 Biaya Marketplace</div>
+                        <div class="form-group">
+                            <label class="form-label">Platform</label>
+                            <select class="form-input" id="platform" onchange="calculate()">
+                                <option value="shopee">Shopee (5.5%)</option>
+                                <option value="tokopedia">Tokopedia (4%)</option>
+                                <option value="tiktok">TikTok Shop (4.5%)</option>
+                                <option value="lazada">Lazada (5%)</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="customFeeGroup" style="display: none;">
+                            <label class="form-label">Fee Custom (%)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="customFee" value="5" oninput="calculate()">
+                                <span class="input-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">📦 Biaya Lainnya</div>
+                        <div class="form-group">
+                            <label class="form-label">Biaya Packing (per item)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="packingCost" value="2000"
+                                    oninput="calculate()">
+                                <span class="input-addon">Rp</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Biaya Lain (per item)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="otherCost" value="0" oninput="calculate()">
+                                <span class="input-addon">Rp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div class="result-card">
+                    <h3>📊 Hasil Kalkulasi</h3>
+
+                    <div class="profit-display" id="profitDisplay">
+                        <div class="profit-label">Total Profit</div>
+                        <div class="profit-value" id="totalProfit">Rp 1.725.000</div>
+                        <div class="profit-percent" id="marginPercent">Margin: 23%</div>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="label">Harga Jual</span>
+                        <span class="value" id="resTotal">Rp 7.500.000</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Total Modal</span>
+                        <span class="value" id="resCost">Rp 5.000.000</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Fee Marketplace</span>
+                        <span class="value" id="resFee">Rp 412.500</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Biaya Packing</span>
+                        <span class="value" id="resPacking">Rp 200.000</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Biaya Lain</span>
+                        <span class="value" id="resOther">Rp 0</span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span class="label">Profit per Item</span>
+                        <span class="value" id="profitPerItem">Rp 17.250</span>
+                    </div>
+
+                    <div class="quick-tips" id="quickTips">
+                        <h4>💡 AI Tips</h4>
+                        <p id="tipText">Margin kamu 23%. Untuk target margin 30%, naikkan harga jual ke Rp 82.000</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        if (!authAPI.isAuthenticated()) window.location.href = 'login.html';
+        const user = authAPI.getUser();
+        if (user) document.getElementById('userName').textContent = user.name || 'User';
+
+        const platformFees = { shopee: 5.5, tokopedia: 4, tiktok: 4.5, lazada: 5 };
+
+        document.getElementById('platform').addEventListener('change', function () {
+            document.getElementById('customFeeGroup').style.display = this.value === 'custom' ? 'block' : 'none';
+            calculate();
+        });
+
+        function formatRupiah(num) { return 'Rp ' + num.toLocaleString('id-ID'); }
+
+        function calculate() {
+            const costPrice = parseFloat(document.getElementById('costPrice').value) || 0;
+            const sellPrice = parseFloat(document.getElementById('sellPrice').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const platform = document.getElementById('platform').value;
+            const packingCost = parseFloat(document.getElementById('packingCost').value) || 0;
+            const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
+
+            let feePercent = platform === 'custom'
+                ? (parseFloat(document.getElementById('customFee').value) || 0)
+                : platformFees[platform];
+
+            const totalSales = sellPrice * quantity;
+            const totalCost = costPrice * quantity;
+            const totalFee = (sellPrice * feePercent / 100) * quantity;
+            const totalPacking = packingCost * quantity;
+            const totalOther = otherCost * quantity;
+
+            const totalProfit = totalSales - totalCost - totalFee - totalPacking - totalOther;
+            const profitPerItem = quantity > 0 ? totalProfit / quantity : 0;
+            const margin = totalSales > 0 ? (totalProfit / totalSales * 100) : 0;
+
+            // Update display
+            document.getElementById('totalProfit').textContent = formatRupiah(Math.round(totalProfit));
+            document.getElementById('marginPercent').textContent = `Margin: ${margin.toFixed(1)}%`;
+            document.getElementById('resTotal').textContent = formatRupiah(totalSales);
+            document.getElementById('resCost').textContent = formatRupiah(totalCost);
+            document.getElementById('resFee').textContent = formatRupiah(Math.round(totalFee));
+            document.getElementById('resPacking').textContent = formatRupiah(totalPacking);
+            document.getElementById('resOther').textContent = formatRupiah(totalOther);
+            document.getElementById('profitPerItem').textContent = formatRupiah(Math.round(profitPerItem));
+
+            // Style based on profit/loss
+            const profitDisplay = document.getElementById('profitDisplay');
+            profitDisplay.classList.toggle('loss', totalProfit < 0);
+
+            // AI Tips
+            let tip = '';
+            if (margin < 10) {
+                tip = '⚠️ Margin terlalu tipis! Pertimbangkan naikkan harga atau cari supplier lebih murah.';
+            } else if (margin < 20) {
+                tip = `Margin ${margin.toFixed(1)}%. Untuk target 30%, naikkan harga ke ${formatRupiah(Math.round(costPrice / 0.7 + totalFee / quantity + packingCost))}`;
+            } else if (margin >= 30) {
+                tip = `🎉 Margin ${margin.toFixed(1)}% sangat bagus! Keep up the good work.`;
+            } else {
+                tip = `Margin ${margin.toFixed(1)}% cukup baik. Optimalkan biaya packing untuk margin lebih tinggi.`;
+            }
+            document.getElementById('tipText').textContent = tip;
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+        // Initial calculation
+        calculate();
+    </script>
+</body>
+
+</html>

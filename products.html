@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk - ResellerHub AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .product-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .product-body {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-sku {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .product-prices {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: var(--radius-md);
+        }
+
+        .price-item {
+            text-align: center;
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .price-value {
+            font-weight: 600;
+        }
+
+        .price-value.cost {
+            color: var(--warning);
+        }
+
+        .price-value.sell {
+            color: var(--success);
+        }
+
+        .price-value.margin {
+            color: var(--primary-light);
+        }
+
+        .product-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .product-actions .btn {
+            flex: 1;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar .form-input {
+            flex: 1;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="sidebar-link"><span class="sidebar-icon">📊</span> Dashboard</a>
+            <a href="products.html" class="sidebar-link active"><span class="sidebar-icon">📦</span> Produk</a>
+            <a href="price-intel.html" class="sidebar-link"><span class="sidebar-icon">🔍</span> Price Intel</a>
+            <a href="sync.html" class="sidebar-link"><span class="sidebar-icon">🔄</span> Multi-Sync</a>
+            <a href="analytics.html" class="sidebar-link"><span class="sidebar-icon">📈</span> Analytics</a>
+            <a href="calculator.html" class="sidebar-link"><span class="sidebar-icon">💰</span> Profit Calc</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+            <button class="sidebar-link" onclick="authAPI.logout()"><span class="sidebar-icon">🚪</span> Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-search"><input type="text" placeholder="Cari produk..." class="form-input"
+                    id="searchInput"></div>
+            <div class="topbar-actions">
+                <button class="btn-icon" title="Notifikasi">🔔<span class="badge">3</span></button>
+                <div class="user-menu"><span id="userName">User</span>
+                    <div class="user-avatar">👤</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <h1 class="page-title">📦 Produk Saya</h1>
+                <button class="btn btn-primary" onclick="openModal('add')">➕ Tambah Produk</button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" class="form-input" placeholder="Cari nama produk, SKU..." id="productSearch">
+                <button class="filter-btn">🏷️ Semua Kategori</button>
+                <button class="filter-btn">📊 Urut: Terbaru</button>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="icon">📦</div>
+                <h3>Belum ada produk</h3>
+                <p>Mulai tambahkan produk pertama kamu untuk mulai tracking</p>
+                <button class="btn btn-primary mt-lg" onclick="openModal('add')">➕ Tambah Produk</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Tambah Produk</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="modal-body">
+                    <input type="hidden" id="productId">
+                    <div class="form-group">
+                        <label class="form-label">Nama Produk *</label>
+                        <input type="text" class="form-input" id="productName" placeholder="iPhone 15 Pro Case"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">SKU</label>
+                            <input type="text" class="form-input" id="productSku" placeholder="SKU-001">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <select class="form-input" id="productCategory">
+                                <option value="">Pilih Kategori</option>
+                                <option value="elektronik">Elektronik</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="aksesoris">Aksesoris</option>
+                                <option value="rumah">Rumah Tangga</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Harga Modal (Rp)</label>
+                            <input type="number" class="form-input" id="costPrice" placeholder="50000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Harga Jual (Rp)</label>
+                            <input type="number" class="form-input" id="sellPrice" placeholder="75000">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stok</label>
+                        <input type="number" class="form-input" id="productStock" placeholder="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea class="form-input" id="productDesc" rows="3"
+                            placeholder="Deskripsi produk..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Check auth
+        if (!authAPI.isAuthenticated()) {
+            window.location.href = 'login.html';
+        }
+        const user = authAPI.getUser();
+        if (user) document.getElementById('userName').textContent = user.name || 'User';
+
+        // Mock products data
+        let products = [
+            { id: 'prd_1', name: 'iPhone 15 Pro Case Magsafe', sku: 'CASE-IP15-001', category: 'aksesoris', cost_price: 35000, sell_price: 50000, stock: 156, image: '📱' },
+            { id: 'prd_2', name: 'Charger USB-C 20W Fast Charging', sku: 'CHG-USBC-001', category: 'elektronik', cost_price: 25000, sell_price: 40000, stock: 243, image: '🔌' },
+            { id: 'prd_3', name: 'TWS Earbuds Bluetooth 5.3', sku: 'TWS-BT53-001', category: 'elektronik', cost_price: 45000, sell_price: 70000, stock: 89, image: '🎧' },
+            { id: 'prd_4', name: 'Laptop Stand Aluminium', sku: 'STAND-LAP-001', category: 'aksesoris', cost_price: 85000, sell_price: 120000, stock: 45, image: '💻' },
+            { id: 'prd_5', name: 'Ring Light 10 inch', sku: 'LIGHT-10-001', category: 'elektronik', cost_price: 75000, sell_price: 110000, stock: 67, image: '💡' },
+            { id: 'prd_6', name: 'Webcam HD 1080p', sku: 'CAM-HD-001', category: 'elektronik', cost_price: 120000, sell_price: 175000, stock: 34, image: '📷' }
+        ];
+
+        function calculateMargin(cost, sell) {
+            if (!cost || !sell || sell <= cost) return 0;
+            return Math.round(((sell - cost) / sell) * 100);
+        }
+
+        function formatPrice(num) {
+            return 'Rp ' + (num || 0).toLocaleString('id-ID');
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const empty = document.getElementById('emptyState');
+
+            if (products.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+
+            grid.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <div class="product-image">${p.image || '📦'}</div>
+                    <div class="product-body">
+                        <h4 class="product-name">${p.name}</h4>
+                        <p class="product-sku">SKU: ${p.sku || '-'}</p>
+                        <div class="product-prices">
+                            <div class="price-item">
+                                <span class="price-label">Modal</span>
+                                <span class="price-value cost">${formatPrice(p.cost_price)}</span>
+                            </div>
+                            <div class="price-item">
+                                <span class="price-label">Jual</span>
+                                <span class="price-value sell">${formatPrice(p.sell_price)}</span>
+                            </div>
+                            <div class="price-item">
+                                <span class="price-label">Margin</span>
+                                <span class="price-value margin">${calculateMargin(p.cost_price, p.sell_price)}%</span>
+                            </div>
+                        </div>
+                        <div class="product-meta">
+                            <span>📦 Stok: ${p.stock || 0}</span>
+                            <span>🏷️ ${p.category || 'Umum'}</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="openModal('edit', '${p.id}')">✏️ Edit</button>
+                            <button class="btn btn-secondary btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openModal(mode, id = null) {
+            const modal = document.getElementById('productModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('productForm');
+            form.reset();
+            document.getElementById('productId').value = '';
+
+            if (mode === 'edit' && id) {
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    title.textContent = 'Edit Produk';
+                    document.getElementById('productId').value = product.id;
+                    document.getElementById('productName').value = product.name;
+                    document.getElementById('productSku').value = product.sku || '';
+                    document.getElementById('productCategory').value = product.category || '';
+                    document.getElementById('costPrice').value = product.cost_price || '';
+                    document.getElementById('sellPrice').value = product.sell_price || '';
+                    document.getElementById('productStock').value = product.stock || '';
+                    document.getElementById('productDesc').value = product.description || '';
+                }
+            } else {
+                title.textContent = 'Tambah Produk';
+            }
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const data = {
+                name: document.getElementById('productName').value,
+                sku: document.getElementById('productSku').value,
+                category: document.getElementById('productCategory').value,
+                cost_price: parseInt(document.getElementById('costPrice').value) || 0,
+                sell_price: parseInt(document.getElementById('sellPrice').value) || 0,
+                stock: parseInt(document.getElementById('productStock').value) || 0,
+                description: document.getElementById('productDesc').value,
+                image: '📦'
+            };
+
+            if (id) {
+                // Edit
+                const index = products.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    products[index] = { ...products[index], ...data };
+                }
+            } else {
+                // Add
+                data.id = 'prd_' + Date.now();
+                products.unshift(data);
+            }
+
+            renderProducts();
+            closeModal();
+            showNotification(id ? 'Produk berhasil diupdate!' : 'Produk berhasil ditambahkan!');
+        });
+
+        function deleteProduct(id) {
+            if (confirm('Yakin ingin menghapus produk ini?')) {
+                products = products.filter(p => p.id !== id);
+                renderProducts();
+                showNotification('Produk berhasil dihapus!');
+            }
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 1rem 1.5rem; border-radius: 10px; z-index: 9999; animation: fadeIn 0.3s;';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        // Search
+        document.getElementById('productSearch').addEventListener('input', function (e) {
+            const query = e.target.value.toLowerCase();
+            const filtered = products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                (p.sku && p.sku.toLowerCase().includes(query))
+            );
+            // For simplicity, just filter the display
+            renderFilteredProducts(filtered);
+        });
+
+        function renderFilteredProducts(filtered) {
+            const grid = document.getElementById('productsGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>Produk tidak ditemukan</h3></div>';
+                return;
+            }
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div class="product-image">${p.image || '📦'}</div>
+                    <div class="product-body">
+                        <h4 class="product-name">${p.name}</h4>
+                        <p class="product-sku">SKU: ${p.sku || '-'}</p>
+                        <div class="product-prices">
+                            <div class="price-item"><span class="price-label">Modal</span><span class="price-value cost">${formatPrice(p.cost_price)}</span></div>
+                            <div class="price-item"><span class="price-label">Jual</span><span class="price-value sell">${formatPrice(p.sell_price)}</span></div>
+                            <div class="price-item"><span class="price-label">Margin</span><span class="price-value margin">${calculateMargin(p.cost_price, p.sell_price)}%</span></div>
+                        </div>
+                        <div class="product-meta"><span>📦 Stok: ${p.stock || 0}</span><span>🏷️ ${p.category || 'Umum'}</span></div>
+                        <div class="product-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="openModal('edit', '${p.id}')">✏️ Edit</button>
+                            <button class="btn btn-secondary btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+        // Initial render
+        renderProducts();
+    </script>
+</body>
+
+</html>

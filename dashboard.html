@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ResellerHub AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+    <!-- Animated Mesh Background -->
+    <div class="mesh-bg"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="sidebar-link active">
+                <span class="sidebar-icon">📊</span> Dashboard
+            </a>
+            <a href="products.html" class="sidebar-link">
+                <span class="sidebar-icon">📦</span> Produk
+            </a>
+            <a href="price-intel.html" class="sidebar-link">
+                <span class="sidebar-icon">🔍</span> Price Intel
+            </a>
+            <a href="sync.html" class="sidebar-link">
+                <span class="sidebar-icon">🔄</span> Multi-Sync
+            </a>
+            <a href="analytics.html" class="sidebar-link">
+                <span class="sidebar-icon">📈</span> Analytics
+            </a>
+            <a href="calculator.html" class="sidebar-link">
+                <span class="sidebar-icon">💰</span> Profit Calc
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="sidebar-link">
+                <span class="sidebar-icon">⚙️</span> Settings
+            </a>
+            <button class="sidebar-link" onclick="authAPI.logout()">
+                <span class="sidebar-icon">🚪</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-search">
+                <input type="text" placeholder="Cari produk, kompetitor..." class="form-input">
+            </div>
+            <div class="topbar-actions">
+                <button class="btn-icon" title="Notifikasi">🔔<span class="badge" id="notifBadge">3</span></button>
+                <div class="user-menu">
+                    <span id="userName">User</span>
+                    <div class="user-avatar" id="userAvatar">👤</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h1>Selamat datang, <span id="welcomeName">Reseller</span>! 👋</h1>
+                    <p>Ringkasan performa toko kamu hari ini</p>
+                </div>
+                <div class="welcome-actions">
+                    <button class="btn btn-primary" onclick="location.href='products.html'">➕ Tambah Produk</button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid stagger-enter">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">💰</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalRevenue">Rp 0</div>
+                        <div class="stat-label">Omzet Hari Ini</div>
+                        <div class="stat-change positive">+12% vs kemarin</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">📦</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalOrders">0</div>
+                        <div class="stat-label">Order Hari Ini</div>
+                        <div class="stat-change positive">+8% vs kemarin</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="avgMargin">0%</div>
+                        <div class="stat-label">Rata-rata Margin</div>
+                        <div class="stat-change negative">-2% vs kemarin</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">🔔</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="priceAlerts">0</div>
+                        <div class="stat-label">Price Alert</div>
+                        <div class="stat-change neutral">Perlu review</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid stagger-enter">
+                <!-- Price Alerts -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🚨 Price Alerts</h3>
+                        <a href="price-intel.html" class="btn btn-sm btn-secondary">Lihat Semua</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert-list" id="alertList">
+                            <div class="alert-item warning">
+                                <div class="alert-icon">⚠️</div>
+                                <div class="alert-content">
+                                    <div class="alert-title">iPhone 15 Case - Harga Turun</div>
+                                    <div class="alert-desc">Kompetitor turunkan harga 15% (Rp 45.000 → Rp 38.250)</div>
+                                </div>
+                                <span class="alert-time">2 jam lalu</span>
+                            </div>
+                            <div class="alert-item info">
+                                <div class="alert-icon">📈</div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Charger 20W - Demand Naik</div>
+                                    <div class="alert-desc">Pencarian naik 45% dalam 7 hari terakhir</div>
+                                </div>
+                                <span class="alert-time">5 jam lalu</span>
+                            </div>
+                            <div class="alert-item success">
+                                <div class="alert-icon">✅</div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Earbuds TWS - Best Price</div>
+                                    <div class="alert-desc">Harga kamu paling kompetitif di marketplace</div>
+                                </div>
+                                <span class="alert-time">1 hari lalu</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Products -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🏆 Produk Terlaris</h3>
+                        <a href="analytics.html" class="btn btn-sm btn-secondary">Analytics</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="product-list" id="topProducts">
+                            <div class="product-item">
+                                <div class="product-rank">1</div>
+                                <div class="product-info">
+                                    <div class="product-name">iPhone 15 Pro Case Magsafe</div>
+                                    <div class="product-stats">
+                                        <span>📦 156 terjual</span>
+                                        <span>💰 Margin 28%</span>
+                                    </div>
+                                </div>
+                                <div class="product-revenue">Rp 7.8jt</div>
+                            </div>
+                            <div class="product-item">
+                                <div class="product-rank">2</div>
+                                <div class="product-info">
+                                    <div class="product-name">Charger USB-C 20W Fast Charging</div>
+                                    <div class="product-stats">
+                                        <span>📦 124 terjual</span>
+                                        <span>💰 Margin 35%</span>
+                                    </div>
+                                </div>
+                                <div class="product-revenue">Rp 4.9jt</div>
+                            </div>
+                            <div class="product-item">
+                                <div class="product-rank">3</div>
+                                <div class="product-info">
+                                    <div class="product-name">TWS Earbuds Bluetooth 5.3</div>
+                                    <div class="product-stats">
+                                        <span>📦 98 terjual</span>
+                                        <span>💰 Margin 42%</span>
+                                    </div>
+                                </div>
+                                <div class="product-revenue">Rp 6.8jt</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Platform Performance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🏪 Performa Platform</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="platform-list">
+                            <div class="platform-item">
+                                <div class="platform-logo">🟠</div>
+                                <div class="platform-info">
+                                    <div class="platform-name">Shopee</div>
+                                    <div class="platform-bar">
+                                        <div class="platform-progress" style="width: 45%; background: #EE4D2D;"></div>
+                                    </div>
+                                </div>
+                                <div class="platform-value">Rp 8.5jt</div>
+                            </div>
+                            <div class="platform-item">
+                                <div class="platform-logo">🟢</div>
+                                <div class="platform-info">
+                                    <div class="platform-name">Tokopedia</div>
+                                    <div class="platform-bar">
+                                        <div class="platform-progress" style="width: 35%; background: #42B549;"></div>
+                                    </div>
+                                </div>
+                                <div class="platform-value">Rp 6.2jt</div>
+                            </div>
+                            <div class="platform-item">
+                                <div class="platform-logo">⚫</div>
+                                <div class="platform-info">
+                                    <div class="platform-name">TikTok Shop</div>
+                                    <div class="platform-bar">
+                                        <div class="platform-progress" style="width: 20%; background: #000;"></div>
+                                    </div>
+                                </div>
+                                <div class="platform-value">Rp 3.8jt</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="card ai-insights">
+                    <div class="card-header">
+                        <h3 class="card-title">🤖 AI Insights</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="insight-item">
+                            <div class="insight-icon">💡</div>
+                            <div class="insight-content">
+                                <strong>Rekomendasi:</strong> Naikkan harga iPhone Case 5% - kompetitor rata-rata lebih
+                                mahal 8%
+                            </div>
+                        </div>
+                        <div class="insight-item">
+                            <div class="insight-icon">🔥</div>
+                            <div class="insight-content">
+                                <strong>Trending:</strong> Demand "Tablet Holder" naik 67% minggu ini. Pertimbangkan
+                                untuk stok!
+                            </div>
+                        </div>
+                        <div class="insight-item">
+                            <div class="insight-icon">⚡</div>
+                            <div class="insight-content">
+                                <strong>Quick Win:</strong> Earbuds TWS margin tertinggi (42%). Push lebih banyak di
+                                TikTok Shop.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script>
+        // Check auth
+        if (!authAPI.isAuthenticated()) {
+            window.location.href = 'login.html';
+        }
+
+        // Load user data
+        const user = authAPI.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.name || 'User';
+            document.getElementById('welcomeName').textContent = user.name?.split(' ')[0] || 'Reseller';
+        }
+
+        // Animated counter function
+        function animateCounter(element, target, prefix = '', suffix = '') {
+            const duration = 1500;
+            const startTime = performance.now();
+            const startValue = 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(startValue + (target - startValue) * easeOut);
+                element.textContent = prefix + current.toLocaleString('id-ID') + suffix;
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Format currency
+        function formatRupiah(amount) {
+            if (amount >= 1000000) return 'Rp ' + (amount / 1000000).toFixed(1) + 'jt';
+            if (amount >= 1000) return 'Rp ' + (amount / 1000).toFixed(0) + 'rb';
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const data = await analyticsAPI.getDashboard();
+
+                // Animate counters
+                const revenueEl = document.getElementById('totalRevenue');
+                const ordersEl = document.getElementById('totalOrders');
+                const marginEl = document.getElementById('avgMargin');
+                const alertsEl = document.getElementById('priceAlerts');
+
+                revenueEl.textContent = formatRupiah(data.totalRevenue || 18500000);
+                animateCounter(ordersEl, data.totalOrders || 378);
+                animateCounter(marginEl, data.avgMargin || 32, '', '%');
+                animateCounter(alertsEl, data.priceAlerts || 3);
+
+            } catch (error) {
+                console.log('Using mock data:', error.message);
+                // Fallback to mock data
+                document.getElementById('totalRevenue').textContent = 'Rp 18.5jt';
+                animateCounter(document.getElementById('totalOrders'), 378);
+                animateCounter(document.getElementById('avgMargin'), 32, '', '%');
+                animateCounter(document.getElementById('priceAlerts'), 3);
+            }
+        }
+
+        // Load price alerts
+        async function loadAlerts() {
+            try {
+                const alerts = await priceAPI.getAlerts();
+                if (alerts.length > 0) {
+                    const alertList = document.getElementById('alertList');
+                    alertList.innerHTML = alerts.slice(0, 3).map(alert => `
+                        <div class="alert-item ${alert.alert_type || 'info'}">
+                            <div class="alert-icon">${getAlertIcon(alert.alert_type)}</div>
+                            <div class="alert-content">
+                                <div class="alert-title">${alert.title}</div>
+                                <div class="alert-desc">${alert.message || ''}</div>
+                            </div>
+                            <span class="alert-time">${formatTimeAgo(alert.created_at)}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.log('Using default alerts');
+            }
+        }
+
+        function getAlertIcon(type) {
+            const icons = { warning: '⚠️', info: '📈', success: '✅', danger: '🚨' };
+            return icons[type] || '📌';
+        }
+
+        function formatTimeAgo(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            if (diffHours < 1) return 'Baru saja';
+            if (diffHours < 24) return diffHours + ' jam lalu';
+            return diffDays + ' hari lalu';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${getAlertIcon(type)}</span>
+                <span class="toast-message">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('hiding'), 4000);
+            setTimeout(() => toast.remove(), 4500);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            loadAlerts();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Intelligence - ResellerHub AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .price-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .price-stat {
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .price-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .price-stat.alert .price-stat-value {
+            color: var(--warning);
+        }
+
+        .price-stat.competitive .price-stat-value {
+            color: var(--success);
+        }
+
+        .price-stat.undercut .price-stat-value {
+            color: var(--danger);
+        }
+
+        .intel-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .intel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .competitor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .competitor-table th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .competitor-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .competitor-table tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .product-thumb {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .product-info .name {
+            font-weight: 600;
+        }
+
+        .product-info .sku {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .price-cell {
+            font-weight: 600;
+        }
+
+        .price-cell.lower {
+            color: var(--danger);
+        }
+
+        .price-cell.higher {
+            color: var(--success);
+        }
+
+        .price-cell.same {
+            color: var(--warning);
+        }
+
+        .trend-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .trend-badge.up {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .trend-badge.down {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .trend-badge.stable {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem;
+        }
+
+        .alerts-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .intel-alert {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--warning);
+        }
+
+        .intel-alert.urgent {
+            border-color: var(--danger);
+        }
+
+        .intel-alert.opportunity {
+            border-color: var(--success);
+        }
+
+        .intel-alert .icon {
+            font-size: 1.5rem;
+        }
+
+        .intel-alert .content {
+            flex: 1;
+        }
+
+        .intel-alert .title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .intel-alert .desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .intel-alert .time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .recommendation-box h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .recommendation-item:last-child {
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .price-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a></div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="sidebar-link"><span class="sidebar-icon">📊</span> Dashboard</a>
+            <a href="products.html" class="sidebar-link"><span class="sidebar-icon">📦</span> Produk</a>
+            <a href="price-intel.html" class="sidebar-link active"><span class="sidebar-icon">🔍</span> Price Intel</a>
+            <a href="sync.html" class="sidebar-link"><span class="sidebar-icon">🔄</span> Multi-Sync</a>
+            <a href="analytics.html" class="sidebar-link"><span class="sidebar-icon">📈</span> Analytics</a>
+            <a href="calculator.html" class="sidebar-link"><span class="sidebar-icon">💰</span> Profit Calc</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+            <button class="sidebar-link" onclick="authAPI.logout()"><span class="sidebar-icon">🚪</span> Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-search"><input type="text" placeholder="Cari produk untuk tracking..."
+                    class="form-input"></div>
+            <div class="topbar-actions">
+                <button class="btn-icon" title="Notifikasi">🔔<span class="badge">5</span></button>
+                <div class="user-menu"><span id="userName">User</span>
+                    <div class="user-avatar">👤</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <h1 class="page-title">🔍 AI Price Intelligence</h1>
+                <button class="btn btn-primary">🔄 Refresh Data</button>
+            </div>
+
+            <!-- Overview Stats -->
+            <div class="price-overview">
+                <div class="price-stat">
+                    <div class="price-stat-value">24</div>
+                    <div class="price-stat-label">🔍 Produk Dimonitor</div>
+                </div>
+                <div class="price-stat competitive">
+                    <div class="price-stat-value">18</div>
+                    <div class="price-stat-label">✅ Harga Kompetitif</div>
+                </div>
+                <div class="price-stat alert">
+                    <div class="price-stat-value">4</div>
+                    <div class="price-stat-label">⚠️ Perlu Review</div>
+                </div>
+                <div class="price-stat undercut">
+                    <div class="price-stat-value">2</div>
+                    <div class="price-stat-label">🚨 Undercut Alert</div>
+                </div>
+            </div>
+
+            <div class="intel-grid">
+                <!-- Competitor Price Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📊 Perbandingan Harga Kompetitor</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="competitor-table">
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th>Harga Kamu</th>
+                                    <th>Terendah</th>
+                                    <th>Rata-rata</th>
+                                    <th>Trend</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="product-cell">
+                                            <div class="product-thumb">📱</div>
+                                            <div class="product-info">
+                                                <div class="name">iPhone 15 Pro Case</div>
+                                                <div class="sku">SKU: CASE-IP15-001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="price-cell">Rp 50.000</span></td>
+                                    <td><span class="price-cell lower">Rp 42.000</span></td>
+                                    <td><span class="price-cell">Rp 48.500</span></td>
+                                    <td><span class="trend-badge down">↓ 5%</span></td>
+                                    <td><button class="action-btn" title="Lihat Detail">👁️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="product-cell">
+                                            <div class="product-thumb">🔌</div>
+                                            <div class="product-info">
+                                                <div class="name">Charger USB-C 20W</div>
+                                                <div class="sku">SKU: CHG-USBC-001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="price-cell">Rp 40.000</span></td>
+                                    <td><span class="price-cell same">Rp 39.500</span></td>
+                                    <td><span class="price-cell">Rp 42.000</span></td>
+                                    <td><span class="trend-badge stable">→ 0%</span></td>
+                                    <td><button class="action-btn" title="Lihat Detail">👁️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="product-cell">
+                                            <div class="product-thumb">🎧</div>
+                                            <div class="product-info">
+                                                <div class="name">TWS Earbuds BT 5.3</div>
+                                                <div class="sku">SKU: TWS-BT53-001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="price-cell">Rp 70.000</span></td>
+                                    <td><span class="price-cell higher">Rp 75.000</span></td>
+                                    <td><span class="price-cell">Rp 82.000</span></td>
+                                    <td><span class="trend-badge up">↑ 8%</span></td>
+                                    <td><button class="action-btn" title="Lihat Detail">👁️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="product-cell">
+                                            <div class="product-thumb">💻</div>
+                                            <div class="product-info">
+                                                <div class="name">Laptop Stand Aluminium</div>
+                                                <div class="sku">SKU: STAND-LAP-001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="price-cell">Rp 120.000</span></td>
+                                    <td><span class="price-cell lower">Rp 99.000</span></td>
+                                    <td><span class="price-cell">Rp 115.000</span></td>
+                                    <td><span class="trend-badge down">↓ 10%</span></td>
+                                    <td><button class="action-btn" title="Lihat Detail">👁️</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Alerts & Recommendations -->
+                <div>
+                    <div class="card alerts-card">
+                        <div class="card-header">
+                            <h3 class="card-title">🚨 Price Alerts</h3>
+                        </div>
+                        <div class="intel-alert urgent">
+                            <div class="icon">🔴</div>
+                            <div class="content">
+                                <div class="title">Laptop Stand - Harga Tergerus</div>
+                                <div class="desc">Kompetitor banting harga 17% lebih murah</div>
+                                <div class="time">15 menit lalu</div>
+                            </div>
+                        </div>
+                        <div class="intel-alert">
+                            <div class="icon">🟡</div>
+                            <div class="content">
+                                <div class="title">iPhone Case - Review Harga</div>
+                                <div class="desc">3 seller turun harga minggu ini</div>
+                                <div class="time">2 jam lalu</div>
+                            </div>
+                        </div>
+                        <div class="intel-alert opportunity">
+                            <div class="icon">🟢</div>
+                            <div class="content">
+                                <div class="title">TWS Earbuds - Peluang!</div>
+                                <div class="desc">Harga kamu paling murah, bisa naikkan 5%</div>
+                                <div class="time">5 jam lalu</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-box">
+                        <h4>🤖 AI Recommendations</h4>
+                        <div class="recommendation-item">
+                            <span>💡</span>
+                            <span>Naikkan harga TWS 5% → tambah profit Rp 175K/minggu</span>
+                        </div>
+                        <div class="recommendation-item">
+                            <span>⚡</span>
+                            <span>Laptop Stand: bundle dengan mouse pad untuk jaga margin</span>
+                        </div>
+                        <div class="recommendation-item">
+                            <span>📈</span>
+                            <span>Charger USB-C demand naik 23%, pertimbangkan stok lebih</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        if (!authAPI.isAuthenticated()) window.location.href = 'login.html';
+        const user = authAPI.getUser();
+        if (user) document.getElementById('userName').textContent = user.name || 'User';
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+    </script>
+</body>
+
+</html>

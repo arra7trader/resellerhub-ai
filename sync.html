@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Platform Sync - ResellerHub AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .platform-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .platform-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .platform-card:hover {
+            border-color: var(--primary);
+        }
+
+        .platform-card.connected {
+            border-color: var(--success);
+        }
+
+        .platform-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .platform-logo.shopee {
+            background: linear-gradient(135deg, #EE4D2D, #FF6633);
+        }
+
+        .platform-logo.tokopedia {
+            background: linear-gradient(135deg, #42B549, #66CC66);
+        }
+
+        .platform-logo.tiktok {
+            background: linear-gradient(135deg, #000, #333);
+        }
+
+        .platform-logo.lazada {
+            background: linear-gradient(135deg, #0F146D, #1A237E);
+        }
+
+        .platform-info h4 {
+            margin: 0 0 0.25rem;
+            font-size: 1.125rem;
+        }
+
+        .platform-info .status {
+            font-size: 0.875rem;
+        }
+
+        .platform-info .status.connected {
+            color: var(--success);
+        }
+
+        .platform-info .status.disconnected {
+            color: var(--text-muted);
+        }
+
+        .platform-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: var(--radius-md);
+        }
+
+        .platform-stat {
+            text-align: center;
+        }
+
+        .platform-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .platform-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .sync-dot.synced {
+            background: var(--success);
+        }
+
+        .sync-dot.syncing {
+            background: var(--warning);
+            animation: pulse 1s infinite;
+        }
+
+        .sync-dot.error {
+            background: var(--danger);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .sync-queue {
+            margin-top: 2rem;
+        }
+
+        .queue-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+        }
+
+        .queue-item .icon {
+            font-size: 1.5rem;
+        }
+
+        .queue-item .info {
+            flex: 1;
+        }
+
+        .queue-item .name {
+            font-weight: 600;
+        }
+
+        .queue-item .platforms {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .queue-item .platform-tag {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-sm);
+        }
+
+        .queue-item .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        .status-badge.syncing {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+
+        .status-badge.done {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .status-badge.failed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a></div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="sidebar-link"><span class="sidebar-icon">📊</span> Dashboard</a>
+            <a href="products.html" class="sidebar-link"><span class="sidebar-icon">📦</span> Produk</a>
+            <a href="price-intel.html" class="sidebar-link"><span class="sidebar-icon">🔍</span> Price Intel</a>
+            <a href="sync.html" class="sidebar-link active"><span class="sidebar-icon">🔄</span> Multi-Sync</a>
+            <a href="analytics.html" class="sidebar-link"><span class="sidebar-icon">📈</span> Analytics</a>
+            <a href="calculator.html" class="sidebar-link"><span class="sidebar-icon">💰</span> Profit Calc</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+            <button class="sidebar-link" onclick="authAPI.logout()"><span class="sidebar-icon">🚪</span> Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-search"><input type="text" placeholder="Cari..." class="form-input"></div>
+            <div class="topbar-actions">
+                <button class="btn-icon">🔔<span class="badge">2</span></button>
+                <div class="user-menu"><span id="userName">User</span>
+                    <div class="user-avatar">👤</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <h1 class="page-title">🔄 Multi-Platform Sync</h1>
+                <button class="btn btn-primary" onclick="syncAll()">🔄 Sync Semua</button>
+            </div>
+
+            <!-- Connected Platforms -->
+            <div class="platform-cards">
+                <div class="platform-card connected">
+                    <div class="platform-header">
+                        <div class="platform-logo shopee">🛒</div>
+                        <div class="platform-info">
+                            <h4>Shopee</h4>
+                            <span class="status connected">✅ Terhubung</span>
+                        </div>
+                    </div>
+                    <div class="platform-stats">
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">156</div>
+                            <div class="platform-stat-label">Produk</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">1.2K</div>
+                            <div class="platform-stat-label">Order</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">4.8</div>
+                            <div class="platform-stat-label">Rating</div>
+                        </div>
+                    </div>
+                    <div class="sync-status"><span class="sync-dot synced"></span> Terakhir sync: 5 menit lalu</div>
+                    <button class="btn btn-secondary" style="width: 100%;">🔄 Sync Sekarang</button>
+                </div>
+
+                <div class="platform-card connected">
+                    <div class="platform-header">
+                        <div class="platform-logo tokopedia">🟢</div>
+                        <div class="platform-info">
+                            <h4>Tokopedia</h4>
+                            <span class="status connected">✅ Terhubung</span>
+                        </div>
+                    </div>
+                    <div class="platform-stats">
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">142</div>
+                            <div class="platform-stat-label">Produk</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">856</div>
+                            <div class="platform-stat-label">Order</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">4.9</div>
+                            <div class="platform-stat-label">Rating</div>
+                        </div>
+                    </div>
+                    <div class="sync-status"><span class="sync-dot syncing"></span> Sedang sync...</div>
+                    <button class="btn btn-secondary" style="width: 100%;" disabled>⏳ Syncing...</button>
+                </div>
+
+                <div class="platform-card connected">
+                    <div class="platform-header">
+                        <div class="platform-logo tiktok">🎵</div>
+                        <div class="platform-info">
+                            <h4>TikTok Shop</h4>
+                            <span class="status connected">✅ Terhubung</span>
+                        </div>
+                    </div>
+                    <div class="platform-stats">
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">98</div>
+                            <div class="platform-stat-label">Produk</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">523</div>
+                            <div class="platform-stat-label">Order</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">4.7</div>
+                            <div class="platform-stat-label">Rating</div>
+                        </div>
+                    </div>
+                    <div class="sync-status"><span class="sync-dot synced"></span> Terakhir sync: 15 menit lalu</div>
+                    <button class="btn btn-secondary" style="width: 100%;">🔄 Sync Sekarang</button>
+                </div>
+
+                <div class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-logo lazada">🔵</div>
+                        <div class="platform-info">
+                            <h4>Lazada</h4>
+                            <span class="status disconnected">⚪ Belum terhubung</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 2rem 0; color: var(--text-muted);">
+                        <p>Hubungkan akun Lazada untuk sync produk otomatis</p>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;">🔗 Hubungkan</button>
+                </div>
+            </div>
+
+            <!-- Sync Queue -->
+            <div class="sync-queue">
+                <h3 style="margin-bottom: 1rem;">📋 Antrian Sync</h3>
+                <div class="queue-item">
+                    <div class="icon">📦</div>
+                    <div class="info">
+                        <div class="name">iPhone 15 Pro Case (Update harga)</div>
+                        <div class="platforms">
+                            <span class="platform-tag">Shopee</span>
+                            <span class="platform-tag">Tokopedia</span>
+                            <span class="platform-tag">TikTok</span>
+                        </div>
+                    </div>
+                    <span class="status-badge syncing">🔄 Syncing</span>
+                </div>
+                <div class="queue-item">
+                    <div class="icon">📦</div>
+                    <div class="info">
+                        <div class="name">TWS Earbuds (Update stok)</div>
+                        <div class="platforms">
+                            <span class="platform-tag">Shopee</span>
+                            <span class="platform-tag">Tokopedia</span>
+                        </div>
+                    </div>
+                    <span class="status-badge pending">⏳ Pending</span>
+                </div>
+                <div class="queue-item">
+                    <div class="icon">📦</div>
+                    <div class="info">
+                        <div class="name">Charger USB-C 20W (Produk baru)</div>
+                        <div class="platforms">
+                            <span class="platform-tag">TikTok</span>
+                        </div>
+                    </div>
+                    <span class="status-badge done">✅ Done</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        if (!authAPI.isAuthenticated()) window.location.href = 'login.html';
+        const user = authAPI.getUser();
+        if (user) document.getElementById('userName').textContent = user.name || 'User';
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+        function syncAll() { alert('Sync semua platform dimulai!'); }
+    </script>
+</body>
+
+</html>

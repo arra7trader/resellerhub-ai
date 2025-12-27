@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - ResellerHub AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .date-btn {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .date-btn:hover,
+        .date-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+        }
+
+        .stat-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-box-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-box-change {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-box-change.up {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .stat-box-change.down {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .stat-box-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-box-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.05));
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .chart-placeholder .bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            height: 150px;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder .bar {
+            width: 30px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            animation: grow 1s ease-out;
+        }
+
+        @keyframes grow {
+            from {
+                height: 0;
+            }
+        }
+
+        .leaderboard {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: var(--radius-md);
+        }
+
+        .leaderboard-rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .leaderboard-rank.gold {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #78350f;
+        }
+
+        .leaderboard-rank.silver {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            color: white;
+        }
+
+        .leaderboard-rank.bronze {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: 600;
+        }
+
+        .leaderboard-stats {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .leaderboard-value {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .platform-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .platform-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .platform-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .platform-icon.shopee {
+            background: rgba(238, 77, 45, 0.2);
+        }
+
+        .platform-icon.tokopedia {
+            background: rgba(66, 181, 73, 0.2);
+        }
+
+        .platform-icon.tiktok {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .platform-bar-container {
+            flex: 1;
+        }
+
+        .platform-name {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .platform-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .platform-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .platform-value {
+            font-weight: 600;
+            min-width: 80px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a></div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="sidebar-link"><span class="sidebar-icon">📊</span> Dashboard</a>
+            <a href="products.html" class="sidebar-link"><span class="sidebar-icon">📦</span> Produk</a>
+            <a href="price-intel.html" class="sidebar-link"><span class="sidebar-icon">🔍</span> Price Intel</a>
+            <a href="sync.html" class="sidebar-link"><span class="sidebar-icon">🔄</span> Multi-Sync</a>
+            <a href="analytics.html" class="sidebar-link active"><span class="sidebar-icon">📈</span> Analytics</a>
+            <a href="calculator.html" class="sidebar-link"><span class="sidebar-icon">💰</span> Profit Calc</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="sidebar-link"><span class="sidebar-icon">⚙️</span> Settings</a>
+            <button class="sidebar-link" onclick="authAPI.logout()"><span class="sidebar-icon">🚪</span> Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="topbar-search"><input type="text" placeholder="Cari..." class="form-input"></div>
+            <div class="topbar-actions">
+                <button class="btn-icon">🔔<span class="badge">2</span></button>
+                <div class="user-menu"><span id="userName">User</span>
+                    <div class="user-avatar">👤</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <h1 class="page-title">📈 Analytics</h1>
+                <div class="date-range">
+                    <button class="date-btn">Hari Ini</button>
+                    <button class="date-btn active">7 Hari</button>
+                    <button class="date-btn">30 Hari</button>
+                    <button class="date-btn">Custom</button>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <div class="stat-box-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">💰
+                        </div>
+                        <span class="stat-box-change up">↑ 12%</span>
+                    </div>
+                    <div class="stat-box-value">Rp 127.5jt</div>
+                    <div class="stat-box-label">Total Revenue</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <div class="stat-box-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">📦
+                        </div>
+                        <span class="stat-box-change up">↑ 8%</span>
+                    </div>
+                    <div class="stat-box-value">2,847</div>
+                    <div class="stat-box-label">Total Orders</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <div class="stat-box-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">💵
+                        </div>
+                        <span class="stat-box-change up">↑ 5%</span>
+                    </div>
+                    <div class="stat-box-value">Rp 38.2jt</div>
+                    <div class="stat-box-label">Total Profit</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <div class="stat-box-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">📊
+                        </div>
+                        <span class="stat-box-change down">↓ 2%</span>
+                    </div>
+                    <div class="stat-box-value">30%</div>
+                    <div class="stat-box-label">Avg. Margin</div>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <!-- Revenue Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📊 Revenue Trend (7 Hari)</h3>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div class="bars">
+                            <div class="bar" style="height: 60%;"></div>
+                            <div class="bar" style="height: 80%;"></div>
+                            <div class="bar" style="height: 45%;"></div>
+                            <div class="bar" style="height: 90%;"></div>
+                            <div class="bar" style="height: 70%;"></div>
+                            <div class="bar" style="height: 100%;"></div>
+                            <div class="bar" style="height: 85%;"></div>
+                        </div>
+                        <span>Sen - Min</span>
+                    </div>
+                </div>
+
+                <!-- Top Products -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🏆 Top Products</h3>
+                    </div>
+                    <div class="leaderboard">
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank gold">1</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-name">iPhone 15 Pro Case</div>
+                                <div class="leaderboard-stats"><span>📦 458 sold</span><span>💰 42% margin</span></div>
+                            </div>
+                            <div class="leaderboard-value">Rp 22.9jt</div>
+                        </div>
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank silver">2</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-name">TWS Earbuds BT 5.3</div>
+                                <div class="leaderboard-stats"><span>📦 312 sold</span><span>💰 38% margin</span></div>
+                            </div>
+                            <div class="leaderboard-value">Rp 21.8jt</div>
+                        </div>
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank bronze">3</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-name">Charger USB-C 20W</div>
+                                <div class="leaderboard-stats"><span>📦 289 sold</span><span>💰 35% margin</span></div>
+                            </div>
+                            <div class="leaderboard-value">Rp 11.5jt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Platform Breakdown -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🏪 Platform Breakdown</h3>
+                    </div>
+                    <div class="platform-breakdown">
+                        <div class="platform-row">
+                            <div class="platform-icon shopee">🛒</div>
+                            <div class="platform-bar-container">
+                                <div class="platform-name">Shopee</div>
+                                <div class="platform-bar">
+                                    <div class="platform-bar-fill" style="width: 45%; background: #EE4D2D;"></div>
+                                </div>
+                            </div>
+                            <div class="platform-value">Rp 57.3jt</div>
+                        </div>
+                        <div class="platform-row">
+                            <div class="platform-icon tokopedia">🟢</div>
+                            <div class="platform-bar-container">
+                                <div class="platform-name">Tokopedia</div>
+                                <div class="platform-bar">
+                                    <div class="platform-bar-fill" style="width: 35%; background: #42B549;"></div>
+                                </div>
+                            </div>
+                            <div class="platform-value">Rp 44.6jt</div>
+                        </div>
+                        <div class="platform-row">
+                            <div class="platform-icon tiktok">🎵</div>
+                            <div class="platform-bar-container">
+                                <div class="platform-name">TikTok Shop</div>
+                                <div class="platform-bar">
+                                    <div class="platform-bar-fill" style="width: 20%; background: #000;"></div>
+                                </div>
+                            </div>
+                            <div class="platform-value">Rp 25.6jt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🤖 AI Insights</h3>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div
+                            style="display: flex; gap: 1rem; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: var(--radius-md);">
+                            <span style="font-size: 1.5rem;">📈</span>
+                            <div><strong>Growth Alert:</strong> TWS Earbuds trending naik 23% minggu ini</div>
+                        </div>
+                        <div
+                            style="display: flex; gap: 1rem; padding: 1rem; background: rgba(245,158,11,0.1); border-radius: var(--radius-md);">
+                            <span style="font-size: 1.5rem;">⚠️</span>
+                            <div><strong>Stock Warning:</strong> iPhone Case stok tersisa 12 pcs, reorder segera!</div>
+                        </div>
+                        <div
+                            style="display: flex; gap: 1rem; padding: 1rem; background: rgba(99,102,241,0.1); border-radius: var(--radius-md);">
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <div><strong>Opportunity:</strong> TikTok Shop underperform, boost dengan live selling</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        if (!authAPI.isAuthenticated()) window.location.href = 'login.html';
+        const user = authAPI.getUser();
+        if (user) document.getElementById('userName').textContent = user.name || 'User';
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+        document.querySelectorAll('.date-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
