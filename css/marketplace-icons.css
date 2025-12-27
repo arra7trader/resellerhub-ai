@@ -1,0 +1,139 @@
+/**
+ * Marketplace Icons - Real SVG Icons
+ * Shopee, Tokopedia, TikTok Shop, Lazada
+ */
+
+/* Base icon styles */
+.marketplace-icon {
+    width: 32px;
+    height: 32px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    border-radius: 6px;
+}
+
+.marketplace-icon.small {
+    width: 20px;
+    height: 20px;
+}
+
+.marketplace-icon.large {
+    width: 48px;
+    height: 48px;
+}
+
+/* Shopee - Orange */
+.marketplace-icon.shopee,
+.platform-logo.shopee,
+.platform-icon.shopee {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23EE4D2D' width='100' height='100' rx='12'/%3E%3Cpath fill='white' d='M50 18c-11 0-20 6.5-20 14.5 0 5 3.5 9.5 9 12.5v3c0 2 1.5 3.5 3.5 3.5s3.5-1.5 3.5-3.5v-1c1.3.2 2.6.3 4 .3s2.7-.1 4-.3v1c0 2 1.5 3.5 3.5 3.5s3.5-1.5 3.5-3.5v-3c5.5-3 9-7.5 9-12.5C70 24.5 61 18 50 18zm-8 20c-2.2 0-4-2.2-4-5s1.8-5 4-5 4 2.2 4 5-1.8 5-4 5zm16 0c-2.2 0-4-2.2-4-5s1.8-5 4-5 4 2.2 4 5-1.8 5-4 5zM30 58h40c1.7 0 3 1.3 3 3v16c0 1.7-1.3 3-3 3H30c-1.7 0-3-1.3-3-3V61c0-1.7 1.3-3 3-3zm5 8h30v2H35v-2zm0 6h20v2H35v-2z'/%3E%3C/svg%3E");
+    background-color: transparent !important;
+}
+
+/* Tokopedia - Green */
+.marketplace-icon.tokopedia,
+.platform-logo.tokopedia,
+.platform-icon.tokopedia {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%2303AC0E' width='100' height='100' rx='12'/%3E%3Cpath fill='white' d='M50 15c-19.3 0-35 15.7-35 35s15.7 35 35 35 35-15.7 35-35-15.7-35-35-35zm0 10c5 0 9.5 1.5 13.5 4l-3.5 5c-3-1.5-6.3-2.5-10-2.5s-7 1-10 2.5l-3.5-5c4-2.5 8.5-4 13.5-4zm-18 18h8v8h-8v-8zm28 0h8v8h-8v-8zM50 65c-8.3 0-15-6.7-15-15h6c0 5 4 9 9 9s9-4 9-9h6c0 8.3-6.7 15-15 15z'/%3E%3C/svg%3E");
+    background-color: transparent !important;
+}
+
+/* TikTok Shop - Black with gradient */
+.marketplace-icon.tiktok,
+.marketplace-icon.tiktokshop,
+.platform-logo.tiktok,
+.platform-logo.tiktokshop,
+.platform-icon.tiktok,
+.platform-icon.tiktokshop {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23000000' width='100' height='100' rx='12'/%3E%3Cpath fill='%2325F4EE' d='M67 33c-3-2-5-5-5.5-8.5H54v42c0 6.5-5.5 12-12 12s-12-5.5-12-12 5.5-12 12-12c1 0 2 .1 3 .4V47c-1-.1-2-.2-3-.2-12 0-21 9.4-21 21s9.4 21 21 21 21-9.4 21-21V47c4 3 9 4.5 14 4.5V44c-3 0-6.5-1-9-3l-.5-.5V33H67z'/%3E%3Cpath fill='%23FE2C55' d='M69 35c3 2.5 6.5 4 10 4v8c-5 0-10-1.5-14-4.5v25c0 11.6-9.4 21-21 21-4.5 0-8.5-1.4-12-3.8 4.5 4.8 11 7.8 18 7.8 11.6 0 21-9.4 21-21V47c4 3 9 4.5 14 4.5v-9c-3 0-5.5-.5-8-1.5-2.5-1.5-4.5-3-6-5h-2z'/%3E%3Cpath fill='white' d='M42 76.5c6.5 0 12-5.5 12-12V22.5h9c-.5 3.5 2.5 6.5 5.5 8.5h2c1.5 2 3.5 3.5 6 5V44c-3.5 0-7-1.5-10-4v25c0 11.6-9.4 21-21 21-7 0-13.5-3-18-7.8 3.5 2.4 7.5 3.8 12 3.8 1.5-.5 2.5-.5 2.5-.5z'/%3E%3C/svg%3E");
+    background-color: transparent !important;
+}
+
+/* Lazada - Blue/Purple */
+.marketplace-icon.lazada,
+.platform-logo.lazada,
+.platform-icon.lazada {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='lazadaGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230F146D'/%3E%3Cstop offset='100%25' style='stop-color:%23F36F21'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23lazadaGrad)' width='100' height='100' rx='12'/%3E%3Cpath fill='white' d='M25 30h10v40H25V30zm15 0h30l-10 15 10 15v10H40V30zm35 0h10v40H75V30zM45 40v20h15l-7.5-10 7.5-10H45z'/%3E%3C/svg%3E");
+    background-color: transparent !important;
+}
+
+/* Platform cards styling */
+.platform-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.platform-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+/* Platform tags with colors */
+.platform-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.platform-tag.shopee {
+    background: rgba(238, 77, 45, 0.2);
+    color: #EE4D2D;
+}
+
+.platform-tag.tokopedia {
+    background: rgba(3, 172, 14, 0.2);
+    color: #03AC0E;
+}
+
+.platform-tag.tiktok,
+.platform-tag.tiktokshop {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.platform-tag.lazada {
+    background: rgba(15, 20, 109, 0.2);
+    color: #0F146D;
+}
+
+/* Legacy emoji replacement - hide emoji, show icon */
+.platform-logo,
+.platform-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+    /* Hide emoji text */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Add marketplace icons row for landing page */
+.marketplace-icons-row {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+}
+
+.marketplace-icons-row .marketplace-icon {
+    width: 60px;
+    height: 60px;
+    transition: transform 0.3s ease;
+}
+
+.marketplace-icons-row .marketplace-icon:hover {
+    transform: scale(1.1);
+}

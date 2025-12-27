@@ -115,7 +115,12 @@ async function handleMe(req, res) {
 function handleGoogleRedirect(req, res) {
     const scope = encodeURIComponent('openid email profile');
     const state = Math.random().toString(36).substring(7);
-    const redirectUri = `${req.headers.origin || 'http://localhost:3000'}${GOOGLE_REDIRECT_URI}`;
+
+    // Build base URL from request headers (works in Vercel)
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+    const redirectUri = `${baseUrl}/api/auth?action=google_callback`;
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${GOOGLE_CLIENT_ID}` +
@@ -132,7 +137,11 @@ async function handleGoogleCallback(req, res) {
         return res.redirect('/login.html?error=' + (error || 'no_code'));
     }
 
-    const redirectUri = `${req.headers.origin || 'http://localhost:3000'}${GOOGLE_REDIRECT_URI}`;
+    // Build redirect URI the same way as in handleGoogleRedirect
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+    const redirectUri = `${baseUrl}/api/auth?action=google_callback`;
 
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
