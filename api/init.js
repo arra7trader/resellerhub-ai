@@ -3,7 +3,7 @@
  * POST /api/init - Initialize database schema
  */
 
-import { initSchema } from '../../lib/db.js';
+import { initSchema } from './lib/db.js';
 
 export default async function handler(req, res) {
     // CORS

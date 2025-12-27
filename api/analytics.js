@@ -3,8 +3,8 @@
  * GET /api/analytics - Dashboard stats
  */
 
-import { query, queryOne } from '../lib/db.js';
-import { verifyToken, extractToken } from '../lib/auth.js';
+import { query, queryOne } from './lib/db.js';
+import { verifyToken, extractToken } from './lib/auth.js';
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
