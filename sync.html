@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">`n    <link rel="stylesheet" href="css/marketplace-icons.css">
+    <link rel="stylesheet" href="css/style.css">`n
+    <link rel="stylesheet" href="css/marketplace-icons.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/animations.css">
     <style>
@@ -54,6 +55,7 @@
             margin-bottom: 1.5rem;
         }
 
+        /* Platform logo styles handled by marketplace-icons.css */
         .platform-logo {
             width: 56px;
             height: 56px;
@@ -61,23 +63,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-        }
-
-        .platform-logo.shopee {
-            background: linear-gradient(135deg, #EE4D2D, #FF6633);
-        }
-
-        .platform-logo.tokopedia {
-            background: linear-gradient(135deg, #42B549, #66CC66);
-        }
-
-        .platform-logo.tiktok {
-            background: linear-gradient(135deg, #000, #333);
-        }
-
-        .platform-logo.lazada {
-            background: linear-gradient(135deg, #0F146D, #1A237E);
         }
 
         .platform-info h4 {
@@ -230,7 +215,7 @@
     </style>
 </head>
 
-<body>`n    <div class="mesh-bg"></div>
+<body>`n <div class="mesh-bg"></div>
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header"><a href="dashboard.html" class="sidebar-brand">🚀 <span>ResellerHub</span></a></div>
         <nav class="sidebar-nav">
@@ -269,7 +254,7 @@
             <div class="platform-cards">
                 <div class="platform-card connected">
                     <div class="platform-header">
-                        <div class="platform-logo shopee">🛒</div>
+                        <div class="platform-logo shopee"></div>
                         <div class="platform-info">
                             <h4>Shopee</h4>
                             <span class="status connected">✅ Terhubung</span>
@@ -295,7 +280,7 @@
 
                 <div class="platform-card connected">
                     <div class="platform-header">
-                        <div class="platform-logo tokopedia">🟢</div>
+                        <div class="platform-logo tokopedia"></div>
                         <div class="platform-info">
                             <h4>Tokopedia</h4>
                             <span class="status connected">✅ Terhubung</span>
@@ -321,7 +306,7 @@
 
                 <div class="platform-card connected">
                     <div class="platform-header">
-                        <div class="platform-logo tiktok">🎵</div>
+                        <div class="platform-logo tiktok"></div>
                         <div class="platform-info">
                             <h4>TikTok Shop</h4>
                             <span class="status connected">✅ Terhubung</span>
@@ -347,7 +332,7 @@
 
                 <div class="platform-card">
                     <div class="platform-header">
-                        <div class="platform-logo lazada">🔵</div>
+                        <div class="platform-logo lazada"></div>
                         <div class="platform-info">
                             <h4>Lazada</h4>
                             <span class="status disconnected">⚪ Belum terhubung</span>
@@ -356,7 +341,8 @@
                     <div style="text-align: center; padding: 2rem 0; color: var(--text-muted);">
                         <p>Hubungkan akun Lazada untuk sync produk otomatis</p>
                     </div>
-                    <button class="btn btn-primary" style="width: 100%;">🔗 Hubungkan</button>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="connectPlatform('lazada', this)">🔗
+                        Hubungkan</button>
                 </div>
             </div>
 
@@ -406,9 +392,125 @@
         const user = authAPI.getUser();
         if (user) document.getElementById('userName').textContent = user.name || 'User';
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-        function syncAll() { alert('Sync semua platform dimulai!'); }
+
+
+        function syncAll() {
+            const btn = document.querySelector('button[onclick="syncAll()"]');
+            const originalText = btn.textContent;
+            btn.textContent = '🔄 Syncing...';
+            btn.disabled = true;
+
+            // Simulate sync process
+            setTimeout(() => {
+                const dots = document.querySelectorAll('.sync-dot');
+                dots.forEach(dot => {
+                    dot.classList.remove('synced', 'error');
+                    dot.classList.add('syncing');
+                });
+            }, 500);
+
+            setTimeout(() => {
+                const dots = document.querySelectorAll('.sync-dot');
+                dots.forEach(dot => {
+                    dot.classList.remove('syncing');
+                    dot.classList.add('synced');
+                });
+
+                // Update timestamps
+                document.querySelectorAll('.sync-status').forEach(status => {
+                    if (status.textContent.includes('Sedang')) {
+                        status.innerHTML = '<span class="sync-dot synced"></span> Baru saja sync';
+                    }
+                });
+
+                btn.textContent = '✅ Berhasil';
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }, 3000);
+        }
+
+        function connectPlatform(platform, btn) {
+            btn.disabled = true;
+            btn.textContent = 'Menghubungkan...';
+
+            // Open popup simulation
+            const width = 500;
+            const height = 600;
+            const left = (window.screen.width / 2) - (width / 2);
+            const top = (window.screen.height / 2) - (height / 2);
+
+            const popup = window.open('', 'Connect ' + platform, `width=${width},height=${height},top=${top},left=${left}`);
+
+            popup.document.write(`
+                <html>
+                    <head>
+                        <title>Connect to ${platform}</title>
+                        <style>
+                            body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f8fafc; }
+                            .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+                            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                            h2 { margin-top: 20px; color: #333; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="loader"></div>
+                        <h2>Menghubungkan ke ${platform.charAt(0).toUpperCase() + platform.slice(1)}...</h2>
+                        <p>Mohon tunggu sebentar...</p>
+                    </body>
+                </html>
+            `);
+
+            setTimeout(() => {
+                popup.close();
+                btn.textContent = '✅ Terhubung';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+
+                // Visual update for card
+                const card = btn.closest('.platform-card');
+                card.classList.add('connected');
+                const statusSpan = card.querySelector('.status');
+                statusSpan.classList.remove('disconnected');
+                statusSpan.classList.add('connected');
+                statusSpan.textContent = '✅ Terhubung';
+
+                // Add fake stats
+                const statsHtml = `
+                    <div class="platform-stats">
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">0</div>
+                            <div class="platform-stat-label">Produk</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">0</div>
+                            <div class="platform-stat-label">Order</div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="platform-stat-value">-</div>
+                            <div class="platform-stat-label">Rating</div>
+                        </div>
+                    </div>
+                    <div class="sync-status"><span class="sync-dot synced"></span> Baru saja terhubung</div>
+                `;
+
+                // Insert stats before the button
+                const header = card.querySelector('.platform-header');
+                const desc = card.querySelector('div[style*="text-align"]');
+                if (desc) desc.remove();
+
+                header.insertAdjacentHTML('afterend', statsHtml);
+
+                setTimeout(() => {
+                    btn.textContent = '🔄 Sync Sekarang';
+                    btn.disabled = false;
+                }, 1500);
+
+            }, 2500);
+        }
     </script>
 </body>
 
 </html>
-
