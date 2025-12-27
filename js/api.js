@@ -1,9 +1,8 @@
 /**
  * ResellerHub AI - API Client
- * Updated for Vercel deployment
+ * Updated for consolidated Vercel endpoints
  */
 
-// Auto-detect API URL based on environment
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.protocol === 'file:'
     ? 'http://localhost:3000/api'
     : '/api';
@@ -27,15 +26,10 @@ const api = {
         if (options.body && typeof options.body === 'object') {
             config.body = JSON.stringify(options.body);
         }
-        try {
-            const response = await fetch(url, config);
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Terjadi kesalahan');
-            return data;
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
+        const response = await fetch(url, config);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Terjadi kesalahan');
+        return data;
     },
 
     get(endpoint) { return this.request(endpoint, { method: 'GET' }); },
@@ -46,7 +40,7 @@ const api = {
 
 const authAPI = {
     async register(data) {
-        const result = await api.post('/auth/register', data);
+        const result = await api.post('/auth?action=register', data);
         if (result.token) {
             api.setToken(result.token);
             localStorage.setItem('resellerhub_user', JSON.stringify(result.user));
@@ -54,14 +48,14 @@ const authAPI = {
         return result;
     },
     async login(email, password) {
-        const result = await api.post('/auth/login', { email, password });
+        const result = await api.post('/auth?action=login', { email, password });
         if (result.token) {
             api.setToken(result.token);
             localStorage.setItem('resellerhub_user', JSON.stringify(result.user));
         }
         return result;
     },
-    async getMe() { return api.get('/auth/me'); },
+    async getMe() { return api.get('/auth?action=me'); },
     logout() {
         api.clearToken();
         localStorage.removeItem('resellerhub_user');
@@ -76,66 +70,33 @@ const authAPI = {
 
 const productsAPI = {
     getAll() { return api.get('/products'); },
-    getById(id) { return api.get(`/products/${id}`); },
+    getById(id) { return api.get(`/products?id=${id}`); },
     create(data) { return api.post('/products', data); },
-    update(id, data) { return api.put(`/products/${id}`, data); },
-    delete(id) { return api.delete(`/products/${id}`); }
+    update(id, data) { return api.put(`/products?id=${id}`, data); },
+    delete(id) { return api.delete(`/products?id=${id}`); }
 };
 
 const analyticsAPI = {
-    getDashboard() { return api.get('/analytics/dashboard'); }
+    getDashboard() { return api.get('/analytics'); }
 };
 
 const plansAPI = {
-    getAll() { return api.get('/plans'); }
+    getAll() { return api.get('/payment?action=plans'); }
 };
 
 const paymentAPI = {
-    create(planId) { return api.post('/payment/create', { plan_id: planId }); },
-    uploadProof(paymentId, proofUrl) {
-        return api.post('/payment/confirm', {
-            payment_id: paymentId,
-            action: 'upload_proof',
-            proof_url: proofUrl
-        });
-    },
-    getMyPayments() { return api.get('/payment/confirm'); }
+    create(planId) { return api.post('/payment?action=create', { plan_id: planId }); },
+    uploadProof(paymentId, proofUrl) { return api.post('/payment?action=confirm', { payment_id: paymentId, proof_url: proofUrl }); },
+    getMyPayments() { return api.get('/payment?action=my_payments'); }
 };
 
 const aiAPI = {
-    suggestPrice(product, competitorPrices = []) {
-        return api.post('/ai/suggest', {
-            action: 'price',
-            data: { product, competitorPrices }
-        });
-    },
-    generateDescription(product) {
-        return api.post('/ai/suggest', {
-            action: 'description',
-            data: { product }
-        });
-    },
-    getBusinessTips(context = {}) {
-        return api.post('/ai/suggest', {
-            action: 'tips',
-            data: { context }
-        });
-    },
-    analyzeTrends(products = []) {
-        return api.post('/ai/suggest', {
-            action: 'trends',
-            data: { products }
-        });
-    },
-    chat(message) {
-        return api.post('/ai/suggest', {
-            action: 'chat',
-            data: { message }
-        });
-    }
+    suggestPrice(product) { return api.post('/ai', { action: 'price', data: { product } }); },
+    generateDescription(product) { return api.post('/ai', { action: 'description', data: { product } }); },
+    getBusinessTips(context = {}) { return api.post('/ai', { action: 'tips', data: { context } }); },
+    chat(message) { return api.post('/ai', { action: 'chat', data: { message } }); }
 };
 
-// Export to window
 window.api = api;
 window.authAPI = authAPI;
 window.productsAPI = productsAPI;
